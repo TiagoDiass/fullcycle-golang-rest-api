@@ -1,4 +1,4 @@
-module github.com/TiagoDiass/fullcycle-rest-api
+module github.com/TiagoDiass/fullcycle-golang-rest-api
 
 go 1.22.1
 
