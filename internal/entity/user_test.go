@@ -21,7 +21,7 @@ func TestNewUser(t *testing.T) {
 	require.NotEqual(t, user.Password, "fake-password")
 }
 
-func TestValidatePassword(t *testing.T) {
+func TestUser_ValidatePassword(t *testing.T) {
 	user, _ := NewUser(
 		"Tiago",
 		"tiago@gmail.com",
