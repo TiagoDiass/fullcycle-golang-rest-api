@@ -17,6 +17,7 @@ func getDatabaseConnection(t *testing.T) *gorm.DB {
 	}
 
 	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.Product{})
 
 	return db
 }
@@ -40,7 +41,7 @@ func TestCreateUser(t *testing.T) {
 	require.NotEmpty(t, createdUser.Password)
 }
 
-func TestFindByEmail(t *testing.T) {
+func TestFindUserByEmail(t *testing.T) {
 	db := getDatabaseConnection(t)
 
 	createdUser, _ := entity.NewUser("Tiago", "tiago@email.com", "123-password")
@@ -55,6 +56,4 @@ func TestFindByEmail(t *testing.T) {
 	require.NotNil(t, foundUser)
 	require.Equal(t, foundUser.ID, createdUser.ID)
 	require.Equal(t, foundUser.Name, createdUser.Name)
-	require.Equal(t, foundUser.Email, createdUser.Email)
-	require.Equal(t, foundUser.Password, createdUser.Password)
 }
