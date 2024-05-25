@@ -30,3 +30,23 @@ func (p *ProductDB) FindById(id string) (*entity.Product, error) {
 
 	return &product, nil
 }
+
+func (p *ProductDB) Update(product *entity.Product) error {
+	_, err := p.FindById(product.ID.String())
+
+	if err != nil {
+		return err
+	}
+
+	return p.DB.Save(product).Error
+}
+
+func (p *ProductDB) Delete(id string) error {
+	product, err := p.FindById(id)
+
+	if err != nil {
+		return err
+	}
+
+	return p.DB.Delete(product).Error
+}
