@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/dto"
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/entity"
@@ -132,5 +133,37 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, req *http.Request)
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+	return
+}
+
+func (h *ProductHandler) ListProducts(w http.ResponseWriter, req *http.Request) {
+	page := req.URL.Query().Get("page")
+	limit := req.URL.Query().Get("limit")
+	sort := req.URL.Query().Get("sort")
+
+	pageInt, err := strconv.Atoi(page)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	products, err := h.ProductDB.FindAll(pageInt, limitInt, sort)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(products)
 	return
 }
