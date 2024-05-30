@@ -7,6 +7,7 @@ import (
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/dto"
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/entity"
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/infra/database"
+	"github.com/go-chi/chi/v5"
 )
 
 type ProductHandler struct {
@@ -43,4 +44,67 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, req *http.Request)
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(product)
+	return
+}
+
+func (h *ProductHandler) GetProduct(w http.ResponseWriter, req *http.Request) {
+	id := chi.URLParam(req, "id")
+
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	product, err := h.ProductDB.FindById(id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(product)
+	return
+}
+
+func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, req *http.Request) {
+	id := chi.URLParam(req, "id")
+
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var updateProductDTO dto.UpdateProductInput
+	err := json.NewDecoder(req.Body).Decode(&updateProductDTO)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	product, err := h.ProductDB.FindById(id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	product.Name = updateProductDTO.Name
+	product.Price = updateProductDTO.Price
+
+	err = h.ProductDB.Update(product)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(product)
+	return
 }
