@@ -4,15 +4,27 @@ import (
 	"net/http"
 
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/configs"
+	_ "github.com/TiagoDiass/fullcycle-golang-rest-api/docs"
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/entity"
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/infra/database"
 	"github.com/TiagoDiass/fullcycle-golang-rest-api/internal/infra/webserver/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
+
+// @title           Go Expert Products API Example
+// @version         1.0
+
+// @host      localhost:8000
+// @BasePath  /
+
+// @securityDefinitions.apiKey  ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	cfg, err := configs.LoadConfig(".")
@@ -47,6 +59,8 @@ func main() {
 		r.Delete("/{id}", productHandler.DeleteProduct)
 		r.Get("/{id}", productHandler.GetProduct)
 	})
+
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 
 	r.Post("/users", userHandler.CreateUser)
 	r.Post("/session", userHandler.CreateSession)

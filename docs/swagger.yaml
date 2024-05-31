@@ -1,0 +1,63 @@
+basePath: /
+definitions:
+  dto.CreateUserInput:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  handlers.Error:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  title: Go Expert Products API Example
+  version: "1.0"
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Creates an user with name, email and password.
+      parameters:
+      - description: user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.Error'
+      summary: Creates an user
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
