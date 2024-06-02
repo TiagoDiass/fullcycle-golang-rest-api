@@ -20,3 +20,7 @@ type CreateSessionInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type CreateSessionOutput struct {
+	AccessToken string `json:"acess_token"`
+}

@@ -72,6 +72,17 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, req *http.Request) {
 	return
 }
 
+// CreateSession godoc
+// @Summary      Creates a session
+// @Description  Creates a session using an user email and password.
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        request	body			dto.CreateSessionInput		true		"user credentials"
+// @Success      200  		{object}  dto.CreateSessionOutput
+// @Failure      400  		{object}  Error
+// @Failure      401  		{object}  Error
+// @Router       /session [post]
 func (h *UserHandler) CreateSession(w http.ResponseWriter, req *http.Request) {
 	var createSessionDTO dto.CreateSessionInput
 	err := json.NewDecoder(req.Body).Decode(&createSessionDTO)
@@ -85,6 +96,8 @@ func (h *UserHandler) CreateSession(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
@@ -92,6 +105,8 @@ func (h *UserHandler) CreateSession(w http.ResponseWriter, req *http.Request) {
 
 	if !passwordsMatch {
 		w.WriteHeader(http.StatusUnauthorized)
+		error := Error{Message: "Unauthorized"}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
@@ -100,11 +115,7 @@ func (h *UserHandler) CreateSession(w http.ResponseWriter, req *http.Request) {
 		"exp": time.Now().Add(time.Second * time.Duration(h.JwtExpiresIn)).Unix(),
 	})
 
-	accessToken := struct {
-		AccessToken string `json:"access_token"`
-	}{
-		AccessToken: tokenString,
-	}
+	accessToken := dto.CreateSessionOutput{AccessToken: tokenString}
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")

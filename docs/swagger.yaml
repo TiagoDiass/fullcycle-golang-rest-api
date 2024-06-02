@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  dto.CreateSessionInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.CreateSessionOutput:
+    properties:
+      acess_token:
+        type: string
+    type: object
   dto.CreateUserInput:
     properties:
       email:
@@ -29,6 +41,36 @@ info:
   title: Go Expert Products API Example
   version: "1.0"
 paths:
+  /session:
+    post:
+      consumes:
+      - application/json
+      description: Creates a session using an user email and password.
+      parameters:
+      - description: user credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSessionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CreateSessionOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handlers.Error'
+      summary: Creates a session
+      tags:
+      - users
   /users:
     post:
       consumes:
