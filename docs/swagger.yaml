@@ -60,6 +60,42 @@ info:
   version: "1.0"
 paths:
   /products:
+    get:
+      consumes:
+      - application/json
+      description: List products with pagination or with no pagination if page and
+        limit are zero.
+      parameters:
+      - description: page number
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Product'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: List products
+      tags:
+      - products
     post:
       consumes:
       - application/json

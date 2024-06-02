@@ -48,6 +48,8 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, req *http.Request)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
@@ -152,6 +154,19 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, req *http.Request)
 	return
 }
 
+// ListProducts godoc
+// @Summary      List products
+// @Description  List products with pagination or with no pagination if page and limit are zero.
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        page		query			string	false		"page number"
+// @Param        limit	query			string	false		"limit"
+// @Success      200  	{array}		entity.Product
+// @Failure      400  	{object}  Error
+// @Failure      500  	{object}  Error
+// @Router       /products 	[get]
+// @Security ApiKeyAuth
 func (h *ProductHandler) ListProducts(w http.ResponseWriter, req *http.Request) {
 	page := req.URL.Query().Get("page")
 	limit := req.URL.Query().Get("limit")
@@ -161,6 +176,8 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, req *http.Request) 
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
@@ -168,6 +185,8 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, req *http.Request) 
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
@@ -175,6 +194,8 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, req *http.Request) 
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
