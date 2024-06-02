@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  dto.CreateProductInput:
+    properties:
+      name:
+        type: string
+      price:
+        type: integer
+    type: object
   dto.CreateSessionInput:
     properties:
       email:
@@ -21,6 +28,17 @@ definitions:
       password:
         type: string
     type: object
+  entity.Product:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: integer
+    type: object
   entity.User:
     properties:
       email:
@@ -41,6 +59,38 @@ info:
   title: Go Expert Products API Example
   version: "1.0"
 paths:
+  /products:
+    post:
+      consumes:
+      - application/json
+      description: Creates a product with name and price.
+      parameters:
+      - description: product params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProductInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Creates a product
+      tags:
+      - products
   /session:
     post:
       consumes:

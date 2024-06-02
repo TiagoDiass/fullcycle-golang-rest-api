@@ -21,12 +21,26 @@ func NewProductHandler(productDB database.IProductDB) *ProductHandler {
 	}
 }
 
+// CreateProduct godoc
+// @Summary      Creates a product
+// @Description  Creates a product with name and price.
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        request		body			dto.CreateProductInput	true	"product params"
+// @Success      201  			{object}  entity.Product
+// @Failure      400  			{object}  Error
+// @Failure      500  			{object}  Error
+// @Router       /products 	[post]
+// @Security ApiKeyAuth
 func (h *ProductHandler) CreateProduct(w http.ResponseWriter, req *http.Request) {
 	var createProductDTO dto.CreateProductInput
 	err := json.NewDecoder(req.Body).Decode(&createProductDTO)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
@@ -41,6 +55,8 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, req *http.Request)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
