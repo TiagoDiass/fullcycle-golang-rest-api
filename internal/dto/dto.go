@@ -22,5 +22,5 @@ type CreateSessionInput struct {
 }
 
 type CreateSessionOutput struct {
-	AccessToken string `json:"acess_token"`
+	AccessToken string `json:"access_token"`
 }
